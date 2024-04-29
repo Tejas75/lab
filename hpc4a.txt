@@ -1,0 +1,40 @@
+!pip install git+https://github.com/afnan47/cuda.git
+%load_ext nvcc_plugin
+
+%%cu
+#include <iostream>
+using namespace std;
+
+
+// CUDA code to multiply matrices
+__global__ void multiply(int* A, int* B, int* C, int size) {
+    // Uses thread indices and block indices to compute each element
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (row < size && col < size) {
+        int sum = 0;
+        for (int i = 0; i < size; i++) {
+            sum += A[row * size + i] * B[i * size + col];
+        }
+        C[row * size + col] = sum;
+    }
+}
+
+
+void initialize(int* matrix, int size) {
+    for (int i = 0; i < size * size; i++) {
+        matrix[i] = rand() % 10;
+    }
+}
+
+
+void print(int* matrix, int size) {
+    for (int row = 0; row < size; row++) {
+        for (int col = 0; col < size; col++) {
+            cout << matrix[row * size + col] << " ";
+        }
+        cout << '\n';
+    }
+    cout << '\n';
+}
