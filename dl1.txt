@@ -1,0 +1,21 @@
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense,Dropout
+from tensorflow.keras.datasets import boston_housing
+(train_data,train_target),(test_data,test_target)=boston_housing.load_data()
+from sklearn.preprocessing import StandardScaler
+scaler=StandardScaler()
+train_data_scaled=scaler.fit_transform(train_data)
+test_data_scaled=scaler.transform(test_data)
+model = Sequential([
+    Dense(64, activation='relu', input_shape=(train_data_scaled.shape[1],)),
+    Dense(64, activation='relu'),
+    Dense(1)
+])
+model.compile(optimizer='adam',loss='mean_squared_error')
+model.fit(train_data_scaled,train_target,epochs=100,batch_size=100)
+result=model.evaluate(test_data_scaled,test_target)
+result 
+
+ 
+
